@@ -1,6 +1,6 @@
 {
   "name": "@queryjs/client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Type-safe URL query builder for queryjs",
   "type": "module",
   "main": "dist/index.js",
