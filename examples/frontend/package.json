@@ -1,0 +1,18 @@
+{
+  "name": "@queryjs/example-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@queryjs/client": "file:../../packages/client"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.4"
+  }
+}

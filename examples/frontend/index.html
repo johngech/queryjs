@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QueryJS Frontend Example</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.5; color: #333; }
+      .controls { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 25px; align-items: center; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef; }
+      .control-group { display: flex; flex-direction: column; gap: 5px; }
+      label { font-size: 0.85rem; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+      input, select, button { padding: 10px 12px; border: 1px solid #ced4da; border-radius: 6px; font-size: 1rem; }
+      button { background: #007bff; color: white; cursor: pointer; border: none; font-weight: 500; transition: background 0.2s; }
+      button:hover { background: #0056b3; }
+      pre { background: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; overflow-x: auto; font-size: 0.9rem; }
+      .url { font-family: 'Courier New', Courier, monospace; padding: 15px; background: #e8f4f8; color: #0c5460; border-radius: 6px; margin-bottom: 20px; word-break: break-all; border: 1px solid #b8daff; font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <h1>👥 Users Explorer</h1>
+    <p>A fullstack demonstration of <strong>@queryjs/client</strong> pointing to a <code>@queryjs/core</code> backend.</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="searchInput">Global Search</label>
+        <input type="text" id="searchInput" placeholder="Search name/email/org..." style="width: 250px;" />
+      </div>
+      
+      <div class="control-group">
+        <label for="statusFilter">Status</label>
+        <select id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="ACTIVE">Active</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="roleFilter">Role</label>
+        <select id="roleFilter">
+          <option value="">All Roles</option>
+          <option value="admin">Admin</option>
+          <option value="editor">Editor</option>
+          <option value="viewer">Viewer</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="sortField">Sort By</label>
+        <select id="sortField">
+          <option value="createdAt">Created Date</option>
+          <option value="name">Name</option>
+          <option value="age">Age</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="descBtn">&nbsp;</label>
+        <button type="button" id="descBtn">Desc</button>
+      </div>
+    </div>
+
+    <div class="url" id="urlDisplay">/users</div>
+
+    <pre id="results">Loading data...</pre>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

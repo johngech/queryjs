@@ -1,6 +1,7 @@
 import { PrismaLibSql } from '@prisma/adapter-libsql';
 import { defineQuery, defineRelation, QueryJSError, q } from '@queryjs/core';
 import { prismaQueryAdapter } from '@queryjs/prisma';
+import cors from 'cors';
 import express from 'express';
 
 import { PrismaClient } from './generated/prisma/client';
@@ -12,6 +13,7 @@ const prisma = new PrismaClient({
   adapter: new PrismaLibSql({ url: 'file:./prisma/dev.db' }),
 });
 const app = express();
+app.use(cors());
 
 // Express 5 defaults to the flat 'simple' query parser; QueryJS filter syntax
 // relies on qs's nested-object parsing, so opt into the 'extended' parser.
@@ -69,5 +71,5 @@ app.use(
   },
 );
 
-const port = Number(process.env.PORT ?? 3000);
+const port = Number(process.env.PORT ?? 3001);
 app.listen(port, () => console.log(`express-prisma listening on http://localhost:${port}`));
