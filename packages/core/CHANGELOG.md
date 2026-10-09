@@ -1,5 +1,12 @@
 # @queryjs/core
 
+## 0.2.1
+
+### Patch Changes
+
+- - @queryjs/client: major release
+  - @queryjs/core: patch release for the search fix
+
 ## 0.2.0
 
 ### Minor Changes

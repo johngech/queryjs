@@ -206,8 +206,9 @@ function searchToWhere(search: SearchQuery): TypeORMWhere[] {
     // Phrase and contains both compile to a contiguous-substring (LIKE) match;
     // prefix uses a starts-with match. Escaping goes through the shared builder.
     const match = term.match === 'prefix' ? 'startsWith' : 'contains';
-    const op = like(term.caseSensitive);
     for (const f of targetFields) {
+      const isCaseSensitive = term.caseSensitive ?? search.caseSensitiveFields?.includes(f);
+      const op = like(isCaseSensitive);
       alternatives.push({ [f]: op(buildLikePattern(term.value, match)) });
     }
   }

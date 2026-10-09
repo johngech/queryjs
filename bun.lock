@@ -14,9 +14,17 @@
         "typescript": "^7.0.0",
       },
     },
+    "packages/client": {
+      "name": "@queryjs/client",
+      "version": "0.2.0",
+      "devDependencies": {
+        "@types/bun": "^1.3.14",
+        "typescript": "^7.0.0",
+      },
+    },
     "packages/core": {
       "name": "@queryjs/core",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "devDependencies": {
         "@biomejs/biome": "2.5.12",
         "@types/bun": "^1.3.14",
@@ -25,7 +33,7 @@
     },
     "packages/drizzle": {
       "name": "@queryjs/drizzle",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "devDependencies": {
         "@types/bun": "^1.4.2",
         "drizzle-orm": "^0.45.3",
@@ -38,7 +46,7 @@
     },
     "packages/prisma": {
       "name": "@queryjs/prisma",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "devDependencies": {
         "@types/bun": "^1.3.14",
         "typescript": "^7.0.0",
@@ -49,7 +57,7 @@
     },
     "packages/typeorm": {
       "name": "@queryjs/typeorm",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "devDependencies": {
         "@types/bun": "^1.4.2",
         "typeorm": "^1.1.1",
@@ -121,6 +129,8 @@
     "@manypkg/tools": ["@manypkg/tools@2.1.2", "", { "dependencies": { "jju": "^1.4.0", "tinyglobby": "^0.2.13", "yaml": "^2.9.0" } }, "sha512-6QEf6yqFbETdwGITKq57aYoPfX/3K8XFNwsAlx0C1M7o8cb79sv1M3w+tWuWvIcSbNqrLF7OD7YpZMVVz335hQ=="],
 
     "@pnpm/deps.graph-sequencer": ["@pnpm/deps.graph-sequencer@1100.0.1", "", {}, "sha512-pOr5+q1fLYKwFN3LAJuGZEnfXDcQ73zqgDHMtGy+K+uIoUqyY+6MeDCWFwfu+4EFuq76I5EPFofoNAI+Bmmq4A=="],
+
+    "@queryjs/client": ["@queryjs/client@workspace:packages/client"],
 
     "@queryjs/core": ["@queryjs/core@workspace:packages/core"],
 

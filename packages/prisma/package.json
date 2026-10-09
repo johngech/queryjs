@@ -1,6 +1,6 @@
 {
   "name": "@queryjs/prisma",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Prisma adapter for QueryJS: translates validated ResourceQuery objects into Prisma where, orderBy, skip, and take arguments.",
   "license": "MIT",
   "repository": {
@@ -46,7 +46,7 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@queryjs/core": "^0.2.0"
+    "@queryjs/core": "^0.2.1"
   },
   "devDependencies": {
     "@types/bun": "^1.3.14",

@@ -1,6 +1,6 @@
 {
   "name": "@queryjs/core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Type-safe, declarative query language for REST APIs: parse filter, sort, search, and pagination HTTP query parameters into validated ResourceQuery objects, then map them to any ORM via pluggable adapters.",
   "license": "MIT",
   "repository": {

@@ -11,24 +11,26 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { $ } from 'bun';
 
-const packages = ['core', 'prisma', 'drizzle', 'typeorm'];
+const packages = ['core', 'prisma', 'drizzle', 'typeorm', 'client'];
 const root = `${import.meta.dirname}/..`;
 const tarballsDir = mkdtempSync(join(tmpdir(), 'queryjs-pack-'));
 
 try {
   // 1. Pack every package
-  for (const pkg of packages) {
-    const dir = join(root, 'packages', pkg);
-    await $`bun pm pack`.cwd(dir);
-    const tgz = (await $`ls ${pkg === 'core' ? 'queryjs-core' : `queryjs-${pkg}`}-*.tgz`
-      .cwd(dir)
-      .text()
-      .then((t) => t.trim().split('\n').at(-1)))!;
-    writeFileSync(
-      join(tarballsDir, `queryjs-${pkg}.tgz`),
-      await Bun.file(join(dir, tgz)).arrayBuffer(),
-    );
-  }
+  await Promise.all(
+    packages.map(async (pkg) => {
+      const dir = join(root, 'packages', pkg);
+      await $`bun pm pack`.cwd(dir);
+      const tgz = (await $`ls ${pkg === 'core' ? 'queryjs-core' : `queryjs-${pkg}`}-*.tgz`
+        .cwd(dir)
+        .text()
+        .then((t) => t.trim().split('\n').at(-1)))!;
+      writeFileSync(
+        join(tarballsDir, `queryjs-${pkg}.tgz`),
+        await Bun.file(join(dir, tgz)).arrayBuffer(),
+      );
+    }),
+  );
 
   // 2. Fresh project + install tarballs and peer ORMs
   const project = mkdtempSync(join(tmpdir(), 'queryjs-smoke-'));
@@ -47,6 +49,7 @@ const { QueryMapper } = compiler;
 const { prismaQueryAdapter } = prisma;
 const { drizzleQueryAdapter, toDrizzleSQL } = drizzle;
 const { typeormQueryAdapter } = typeorm;
+const { createQuery } = client;
 
 if (!defineQuery || !mapQuery || typeof q !== 'object') throw new Error('core exports missing');
 if (typeof QueryMapper !== 'function') throw new Error('core/compiler does not export QueryMapper');
@@ -54,6 +57,7 @@ if (typeof prismaQueryAdapter !== 'object' || prismaQueryAdapter === null) throw
 if (typeof drizzleQueryAdapter !== 'object' || drizzleQueryAdapter === null) throw new Error('drizzleQueryAdapter missing');
 if (typeof toDrizzleSQL !== 'function') throw new Error('toDrizzleSQL missing');
 if (typeof typeormQueryAdapter !== 'object' || typeormQueryAdapter === null) throw new Error('typeormQueryAdapter missing');
+if (typeof createQuery !== 'function') throw new Error('createQuery missing from client');
 
 // Exercise core -> compiler -> prisma wiring with a real query
 const usersQuery = defineQuery({
@@ -81,12 +85,14 @@ import * as compiler from '@queryjs/core/compiler';
 import * as prisma from '@queryjs/prisma';
 import * as drizzle from '@queryjs/drizzle';
 import * as typeorm from '@queryjs/typeorm';
+import * as client from '@queryjs/client';
 ${asserts}`;
   const cjs = `const core = require('@queryjs/core');
 const compiler = require('@queryjs/core/compiler');
 const prisma = require('@queryjs/prisma');
 const drizzle = require('@queryjs/drizzle');
 const typeorm = require('@queryjs/typeorm');
+const client = require('@queryjs/client');
 ${asserts}`;
   const nodeMjs = join(project, 'smoke.mjs');
   const nodeCjs = join(project, 'smoke.cjs');
@@ -101,16 +107,18 @@ ${asserts}`;
     ['node', nodeCjs],
   ] as const;
   let ran = 0;
-  for (const [runtime, file] of combos) {
-    try {
-      await $`${runtime} ${file}`.cwd(project);
-    } catch (error) {
-      throw new Error(
-        `${runtime} ${file.endsWith('.mjs') ? 'esm' : 'cjs'} failed:\n${String(error)}`,
-      );
-    }
-    ran += 1;
-  }
+  await Promise.all(
+    combos.map(async ([runtime, file]) => {
+      try {
+        await $`${runtime} ${file}`.cwd(project);
+        ran += 1;
+      } catch (error) {
+        throw new Error(
+          `${runtime} ${file.endsWith('.mjs') ? 'esm' : 'cjs'} failed:\n${String(error)}`,
+        );
+      }
+    }),
+  );
 
   console.log(`Smoke pack passed: all ${ran} import/require combinations load (Bun + Node).`);
 } finally {

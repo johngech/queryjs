@@ -1,6 +1,6 @@
 {
   "name": "@queryjs/drizzle",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Drizzle adapter for QueryJS: translates validated ResourceQuery objects into Drizzle SQL where and orderBy fragments plus skip and take.",
   "license": "MIT",
   "repository": {
@@ -46,7 +46,7 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@queryjs/core": "^0.2.0",
+    "@queryjs/core": "^0.2.1",
     "drizzle-orm": "^0.38.3 || ^0.45.3"
   },
   "devDependencies": {
