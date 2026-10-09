@@ -63,16 +63,20 @@ async function fetchUsers() {
 }
 
 // Attach reactive listeners
-searchInput.addEventListener('input', fetchUsers);
-statusFilter.addEventListener('change', fetchUsers);
-roleFilter.addEventListener('change', fetchUsers);
-sortField.addEventListener('change', fetchUsers);
+const handleFetch = () => {
+  void fetchUsers();
+};
+
+searchInput.addEventListener('input', handleFetch);
+statusFilter.addEventListener('change', handleFetch);
+roleFilter.addEventListener('change', handleFetch);
+sortField.addEventListener('change', handleFetch);
 
 descBtn.addEventListener('click', () => {
   isDesc = !isDesc;
   descBtn.textContent = isDesc ? 'Desc' : 'Asc';
-  fetchUsers();
+  void fetchUsers();
 });
 
 // Run the initial data load
-fetchUsers();
+await fetchUsers();

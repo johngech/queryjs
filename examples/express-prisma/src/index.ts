@@ -13,7 +13,7 @@ const prisma = new PrismaClient({
   adapter: new PrismaLibSql({ url: 'file:./prisma/dev.db' }),
 });
 const app = express();
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 // Express 5 defaults to the flat 'simple' query parser; QueryJS filter syntax
 // relies on qs's nested-object parsing, so opt into the 'extended' parser.

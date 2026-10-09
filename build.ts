@@ -33,17 +33,19 @@ const adapterExternals: Record<string, string[]> = {
   typeorm: ['@queryjs/core', '@queryjs/core/compiler', 'typeorm'],
   client: [],
 };
-for (const adapter of adapters) {
-  console.log(`Building @queryjs/${adapter}...`);
-  // tsc emits declarations only; the runtime files are bundled below because
-  // tsc's ESM output uses extension-less relative imports Node rejects.
-  await $`tsc -p packages/${adapter}/tsconfig.build.json --emitDeclarationOnly`;
-  const externalFlags = adapterExternals[adapter].flatMap((name) => ['--external', name]);
-  await $`bun build packages/${adapter}/src/index.ts --outdir packages/${adapter}/dist --format esm --target node ${externalFlags}`;
-  // require() consumers get a single loadable CJS file; the peer
-  // `@queryjs/core` / `@queryjs/core/compiler` and the host ORM stay external.
-  await $`bun build packages/${adapter}/src/index.ts --outfile packages/${adapter}/dist/index.cjs --format cjs --target node ${externalFlags}`;
-}
+await Promise.all(
+  adapters.map(async (adapter) => {
+    console.log(`Building @queryjs/${adapter}...`);
+    // tsc emits declarations only; the runtime files are bundled below because
+    // tsc's ESM output uses extension-less relative imports Node rejects.
+    await $`tsc -p packages/${adapter}/tsconfig.build.json --emitDeclarationOnly`;
+    const externalFlags = adapterExternals[adapter].flatMap((name) => ['--external', name]);
+    await $`bun build packages/${adapter}/src/index.ts --outdir packages/${adapter}/dist --format esm --target node ${externalFlags}`;
+    // require() consumers get a single loadable CJS file; the peer
+    // `@queryjs/core` / `@queryjs/core/compiler` and the host ORM stay external.
+    await $`bun build packages/${adapter}/src/index.ts --outfile packages/${adapter}/dist/index.cjs --format cjs --target node ${externalFlags}`;
+  }),
+);
 
 // ── Packaging smoke checks ────────────────────────────────────────────────
 
