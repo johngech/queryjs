@@ -4,7 +4,7 @@ import { $ } from 'bun';
 const adapterDist = (name: string) => `packages/${name}/dist`;
 
 // Clean dist directories (cross-platform rm -rf)
-for (const pkg of ['core', 'prisma', 'drizzle', 'typeorm']) {
+for (const pkg of ['core', 'prisma', 'drizzle', 'typeorm', 'client']) {
   rmSync(`packages/${pkg}/dist`, { recursive: true, force: true });
 }
 
@@ -26,11 +26,12 @@ await $`bun build packages/core/src/compiler/index.ts --outfile packages/core/di
 await $`bun build packages/core/src/compiler/index.ts --outdir packages/core/dist/compiler --format esm --target node`;
 
 // Build adapter packages
-const adapters = ['prisma', 'drizzle', 'typeorm'];
+const adapters = ['prisma', 'drizzle', 'typeorm', 'client'];
 const adapterExternals: Record<string, string[]> = {
   prisma: ['@queryjs/core', '@queryjs/core/compiler'],
   drizzle: ['@queryjs/core', '@queryjs/core/compiler', 'drizzle-orm'],
   typeorm: ['@queryjs/core', '@queryjs/core/compiler', 'typeorm'],
+  client: [],
 };
 for (const adapter of adapters) {
   console.log(`Building @queryjs/${adapter}...`);
