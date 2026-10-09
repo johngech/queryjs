@@ -17,18 +17,20 @@ const tarballsDir = mkdtempSync(join(tmpdir(), 'queryjs-pack-'));
 
 try {
   // 1. Pack every package
-  for (const pkg of packages) {
-    const dir = join(root, 'packages', pkg);
-    await $`bun pm pack`.cwd(dir);
-    const tgz = (await $`ls ${pkg === 'core' ? 'queryjs-core' : `queryjs-${pkg}`}-*.tgz`
-      .cwd(dir)
-      .text()
-      .then((t) => t.trim().split('\n').at(-1)))!;
-    writeFileSync(
-      join(tarballsDir, `queryjs-${pkg}.tgz`),
-      await Bun.file(join(dir, tgz)).arrayBuffer(),
-    );
-  }
+  await Promise.all(
+    packages.map(async (pkg) => {
+      const dir = join(root, 'packages', pkg);
+      await $`bun pm pack`.cwd(dir);
+      const tgz = (await $`ls ${pkg === 'core' ? 'queryjs-core' : `queryjs-${pkg}`}-*.tgz`
+        .cwd(dir)
+        .text()
+        .then((t) => t.trim().split('\n').at(-1)))!;
+      writeFileSync(
+        join(tarballsDir, `queryjs-${pkg}.tgz`),
+        await Bun.file(join(dir, tgz)).arrayBuffer(),
+      );
+    }),
+  );
 
   // 2. Fresh project + install tarballs and peer ORMs
   const project = mkdtempSync(join(tmpdir(), 'queryjs-smoke-'));
@@ -105,16 +107,18 @@ ${asserts}`;
     ['node', nodeCjs],
   ] as const;
   let ran = 0;
-  for (const [runtime, file] of combos) {
-    try {
-      await $`${runtime} ${file}`.cwd(project);
-    } catch (error) {
-      throw new Error(
-        `${runtime} ${file.endsWith('.mjs') ? 'esm' : 'cjs'} failed:\n${String(error)}`,
-      );
-    }
-    ran += 1;
-  }
+  await Promise.all(
+    combos.map(async ([runtime, file]) => {
+      try {
+        await $`${runtime} ${file}`.cwd(project);
+        ran += 1;
+      } catch (error) {
+        throw new Error(
+          `${runtime} ${file.endsWith('.mjs') ? 'esm' : 'cjs'} failed:\n${String(error)}`,
+        );
+      }
+    }),
+  );
 
   console.log(`Smoke pack passed: all ${ran} import/require combinations load (Bun + Node).`);
 } finally {
