@@ -42,6 +42,7 @@ export class QuerySearchEngine {
     }
 
     const fields = QuerySearchEngine.collectSearchableFields(spec);
+    const caseSensitiveFields = QuerySearchEngine.collectCaseSensitiveFields(spec);
     if (fields.length === 0) {
       throw new QueryJSError(
         'Search is not supported for this resource',
@@ -51,7 +52,11 @@ export class QuerySearchEngine {
 
     const terms = QuerySearchEngine.parseTerms(trimmed, spec, limits);
 
-    return { raw: trimmed, terms, fields };
+    const result: SearchQuery = { raw: trimmed, terms, fields };
+    if (caseSensitiveFields.length > 0) {
+      result.caseSensitiveFields = caseSensitiveFields;
+    }
+    return result;
   }
 
   /** Collect all field names where searchable === true. */
@@ -59,6 +64,17 @@ export class QuerySearchEngine {
     const fields: string[] = [];
     for (const [name, def] of Object.entries(spec.fields)) {
       if (def.searchable) {
+        fields.push(name);
+      }
+    }
+    return fields;
+  }
+
+  /** Collect all searchable field names where caseSensitive === true. */
+  private static collectCaseSensitiveFields(spec: ResourceQueryDefinition): string[] {
+    const fields: string[] = [];
+    for (const [name, def] of Object.entries(spec.fields)) {
+      if (def.searchable && def.caseSensitive) {
         fields.push(name);
       }
     }
@@ -204,6 +220,9 @@ export class QuerySearchEngine {
     // Resolve caseSensitive from the field spec (falls back to undefined = insensitive)
     const caseSensitive = field ? spec.fields[field]?.caseSensitive : undefined;
 
-    return { value: value.trim(), match, field, caseSensitive };
+    const term: SearchTerm = { value: value.trim(), match };
+    if (field) term.field = field;
+    if (caseSensitive !== undefined) term.caseSensitive = caseSensitive;
+    return term;
   }
 }

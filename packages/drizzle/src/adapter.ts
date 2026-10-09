@@ -99,7 +99,8 @@ function buildSearchCondition(search: SearchQuery | undefined): SQL | undefined 
     // prefix uses a starts-with match.
     const op = term.match === 'prefix' ? 'startsWith' : 'contains';
     for (const f of targetFields) {
-      parts.push(conditionFor(f, op, term.value, term.caseSensitive));
+      const isCaseSensitive = term.caseSensitive ?? search.caseSensitiveFields?.includes(f);
+      parts.push(conditionFor(f, op, term.value, isCaseSensitive));
     }
   }
   if (parts.length === 0) return undefined;

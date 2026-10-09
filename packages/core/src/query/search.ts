@@ -38,4 +38,6 @@ export interface SearchQuery {
   terms: SearchTerm[];
   /** All searchable fields (derived from the spec). */
   fields: string[];
+  /** Searchable fields that are explicitly case-sensitive. */
+  caseSensitiveFields?: string[];
 }

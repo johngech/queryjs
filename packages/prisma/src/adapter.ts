@@ -132,8 +132,9 @@ function searchToWhere(search: SearchQuery): Record<string, unknown> {
     // uses a starts-with match.
     const op = term.match === 'prefix' ? 'startsWith' : 'contains';
     for (const f of targetFields) {
+      const isCaseSensitive = term.caseSensitive ?? search.caseSensitiveFields?.includes(f);
       fieldClauses.push({
-        [f]: { [op]: term.value, ...modeClause(term.caseSensitive) },
+        [f]: { [op]: term.value, ...modeClause(isCaseSensitive) },
       });
     }
   }
