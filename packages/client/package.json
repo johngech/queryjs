@@ -2,6 +2,36 @@
   "name": "@queryjs/client",
   "version": "0.2.0",
   "description": "Type-safe URL query builder for queryjs",
+  "keywords": [
+    "queryjs",
+    "query",
+    "builder",
+    "url",
+    "type-safe",
+    "frontend",
+    "api",
+    "query-string"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johngech/queryjs.git",
+    "directory": "packages/client"
+  },
+  "author": "Yohannes Getachew <yohngech@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/johngech/queryjs/issues"
+  },
+  "homepage": "https://github.com/johngech/queryjs/tree/main/packages/client#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
